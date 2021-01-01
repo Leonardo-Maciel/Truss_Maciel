@@ -8,26 +8,24 @@
 # zeros nas restriçoes
 # con = contem a conectividade de cada elemento
 # --------------------------------------------------------
-def constroi(ID,conect):
+def constroi(self,ID,conect):
 
-    nnos = size(ID,1)
+    nnos = len(ID)
     ngl = 0.0
 
     for i in range(nnos):
         for j in range(2):
-            n = ID(i,j)
+            n = ID[i][j]
             if n >= 1:
-                ID(i,j)=0.0
+                ID[i][j]=0.0
             else:
                 ngl = ngl + 1
-                ID(i,j) = ngl
+                ID[i][j] = ngl
 
-    nelm = size(conect,1)
-    LD = zeros(nelm,4)
+    nelm = len(conect)
+    LD = np.zeros((nelm,4))
     for i in range(nelm):
         for j in range(2):
-            LD(i,j) = ID(conect(i,1),j)
-            LD(i,j+2) = ID(conect(i,2),j)
-
-    LD = LD'
+            LD[i][j] = ID[conect[i][0]][j]
+            LD[i][j+1] = ID[conect[i][1]][j]#mudei mas fiquei na duvida nesse j+2
     return LD

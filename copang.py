@@ -1,11 +1,11 @@
-def copang(x, y, conect):
+def compang(x, y, conect):
     x = x
     y = y
     nelm = 13
     connect = conect
     """ Calculando o comprimento e os angulos das barras"""
-    comp = []  # comprimentro entre os nós
-    ang = []  # angulos entre as barras da treliça
+    self.comp = []  # comprimentro entre os nós
+    self.ang = []  # angulos entre as barras da treliça
     L = []
     teta = []
     A = []
@@ -15,7 +15,7 @@ def copang(x, y, conect):
         noj = connect[i][0]
         nok = connect[i][1]
         L.append(sqrt((x[noj] - x[nok]) ** 2 + (y[noj] - y[nok]) ** 2))
-        comp.append(L[i])
+        self.comp.append(L[i])
 
     for i in range(nelm):
         # nessa parte q ele relaciona as coordenadas com os nós
@@ -28,6 +28,6 @@ def copang(x, y, conect):
             teta.append(atan(A[i] / B[i]))
         else:
             teta.append(atan(B[i] / A[i]))
-        ang.append(teta[i])
+        self.ang.append(teta[i])
     print(ang)
     print(comp)

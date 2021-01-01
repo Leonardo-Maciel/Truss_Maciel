@@ -1,7 +1,7 @@
 from builtins import set
+import numpy as np
 
-
-class Createtruss:
+class plottruss:
 
     def __init__(self, x, y, connect):
         self.x = x
@@ -23,7 +23,9 @@ class Createtruss:
                 self.y1.append(self.point[self.connect[i][1]][1])
             plt.plot(self.x1, self.y1)
             plt.show()
-class Opt(Createtruss):
+class Calc():
+    def __init__(self):
+class Opt():
     """Otimização via PSO"""
 
     def __init__(self):
@@ -37,15 +39,13 @@ class Opt(Createtruss):
         # global kns
         # global idan
 
-        sef.idan = 1
+        self.idan = 1
         # 1 --- FEM(método dos elementos finitos)
         # 2 --- RBM
 
         self.iflag = 2
         # 1 --- Análise estrutural
         # 2 --- Otimização
-
-        load trussfe.mat;
 
         self.createtruss10()
         self.trussfe()
