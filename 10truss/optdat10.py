@@ -1,12 +1,8 @@
-#  Fornece dados para a otimizacao
+import numpy as np
 
-def optdat10(area, lpdva, ndvab, nglb):
-    #
-    #  Fornece dados para a otimizacao
-    #
-    #
-    #
-    #	 	Tipo de funcao objetivo: tpobj==1 ---Peso
+def optdat10(area,lpdva,ndvab,nglb):
+    """Fornece dados para a otimizacao"""
+    #	                           	 Tipo de funcao objetivo: tpobj==1 ---Peso
     #                                tpobj==2 ---Energia
     #                                tpobj==3 ---Máxima tensão
     #                                tpobj==4 ---Máximo deslocamento
@@ -25,22 +21,25 @@ def optdat10(area, lpdva, ndvab, nglb):
     #               vub---limite superiores
     #               x0 --- valor inicial
     #
-    xpdva = zeros(1, ndvab)
-    for idvab = 1:ndvab
-        iel = lpdva(idvab)
-        xpdva(idvab) = area(iel)
+
+
+    xpdva = np.zeros(ndvab)
+    for idvab in range(ndvab):
+        iel = lpdva[idvab]
+        xpdva[idvab] = area[iel]
 
     x0 = xpdva
-    vlb = 0.1 * ones([1, ndvab])
-    vub = 10 * ones([1, ndvab])
+    vlb = 0.1 * np.ones(ndvab)
+    vlb = 0.1 * np.ones(ndvab)
+    vub = 10 * np.ones(ndvab)
 
     #
     #         	Entrar com os valores limites das restrições
     #               clb---limites inferiores
     #               cub---limites superiores
 
-    cones = ones([1, length(area)])  # relacionado ao nº de elementos
-    cones2 = ones([1, nglb])  # relacionado ao nº de graus de liberdade
+    cones = np.ones(len(area))  # relacionado ao nº de elementos
+    cones2 = np.ones(nglb)  # relacionado ao nº de graus de liberdade
 
     clb1 = -250 * cones
     cub1 = 250 * cones
@@ -50,20 +49,20 @@ def optdat10(area, lpdva, ndvab, nglb):
     #         dlb1 = -0.4*cones2
     #         dub1 = 0.4*cones2
 
-    clbv = 1.5e+06 - eps  # 0
+    clbv = 1.5e+06 - 2.2204e-16  # 0
     cubv = 1.5e+06
 
-    clbd = -1 * 10 ^ -3 * cones2
-    cubd = 1 * 10 ^ -3 * cones2
+    clbd = -1 * (10 ** -3) * cones2
+    cubd = 1 * (10 ** -3) * cones2
 
     elbv = 2e-2
     eubv = 2e-2
 
     if tpres == 1:
-        # VOLUME
+    # VOLUME
         cub = cubv
         clb = clbv
-    elif tpres ==2:
+    elif tpres == 2:
     # TENSOES
         clb = clb1
         cub = cub1
@@ -79,4 +78,7 @@ def optdat10(area, lpdva, ndvab, nglb):
     # ENERGIA
         clb = elbv
         cub = eubv
-    return tpobj, tpres, vlb, vub, x0, clb, cub
+
+    dadosoptdat10= [tpobj,tpres,vlb,vub,x0,clb,cub]
+
+    return dadosoptdat10

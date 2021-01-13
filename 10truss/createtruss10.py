@@ -1,6 +1,6 @@
 import numpy as np
 from scipy.sparse import csr_matrix
-from math import sqrt, atan, sin, cos
+from math import sqrt, atan, sin, cos, pi
 "se precisar de algum K1K2K3 TEM Q RESOLVER KEGLBRB!! maxmax tbm é lá"
 
 class createtruss10():
@@ -25,9 +25,9 @@ class createtruss10():
         #   Forneça o modulo de elasticidade de cada barra
 
         self.E = 2.07 * (10 ** 11)
-        self.els = self.E * np.ones([1,len(self.conect)])
+        self.els = self.E * np.ones(len(self.conect))
 
-        self.ro = np.ones([1, len(self.conect)])
+        self.ro = np.ones(len(self.conect))
 
         self.props = [self.ang, self.comp, self.els, self.ro]
 
@@ -86,13 +86,13 @@ class createtruss10():
         self.ndvab = 3
         #        1   2   3   4   5   6   7   8   9   10
         self.link = [[0, 0], [1, 0], [1, 0], [1, 0], [2, 0], [2, 0], [1, 0], [2, 0], [0, 0], [2, 0]] #mudei
-        self.lpdva = [1, 3, 2]
+        self.lpdva = [0, 2, 1]#mudei
         self.perturb = 10**-6
     
     def compang(self):
 
         self.nelm = len(self.conect)
-        """ Calculando o comprimento e os angulos das barras"""
+        """ Calculando o comprimento e os angulos das barras O RESULTADO TÁ DANDO DIFERENTE"""
         self.comp = []  # comprimentro entre os nós
         self.ang = []  # angulos entre as barras da treliça
         L = []
@@ -113,8 +113,8 @@ class createtruss10():
                 A[i] = 10 ** (-9)  # ???????
 
             B.append(abs(self.Y[self.conect[i][1]] - self.Y[self.conect[i][0]]))
-            if self.X[self.conect[i][1]] < self.X[self.conect[i][0]]:
-                teta.append(atan(A[i] / B[i]))
+            if atan(B[i]/A[i])<0:
+                teta.append(atan(A[i] / B[i]) + pi)
             else:
                 teta.append(atan(B[i] / A[i]))
             self.ang.append(teta[i])

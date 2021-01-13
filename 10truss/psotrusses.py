@@ -1,7 +1,6 @@
-from builtins import set
 import numpy as np
-
-class plottruss:
+from optdat10 import optdat10
+class plottruss():
 
     def __init__(self, x, y, connect):
         self.x = x
@@ -22,9 +21,7 @@ class plottruss:
                 self.y1.append(self.point[self.connect[i][0]][1])
                 self.y1.append(self.point[self.connect[i][1]][1])
             plt.plot(self.x1, self.y1)
-            plt.show()
-class Calc():
-    def __init__(self):
+
 class Opt():
     """Otimização via PSO"""
 
@@ -53,7 +50,7 @@ class Opt():
         #		2---OTIMIZAÇÃO
         #penal = 10 ^ 8; JA TEM LA EM CIMA
         self.ndvab = max(max(link))
-        [tpobj, tpres, vlb, vub, x0, clb, cub] = optdat10(area, lpdva, ndvab, nglb)
+        optdat10 = optdat10(area, lpdva, ndvab, nglb)#[tpobj, tpres, vlb, vub, x0, clb, cub]
         [f0, r0] = optsolpso(props, fext, glb, link, tpobj, tpres, area)
         para = [ndvab, tpobj, tpres, f0]
 
@@ -132,3 +129,5 @@ class Opt():
         en = fext'*u;
 
         fstr = mZb(posZb, 1);  # valor ótimo
+
+Opt()
