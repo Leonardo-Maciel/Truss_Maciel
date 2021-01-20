@@ -1,16 +1,17 @@
 import numpy as np
 from optdat10 import optdat10
+from matplotlib import pyplot as plt
+from createtruss10 import createtruss10
 class plottruss():
 
-    def __init__(self, x, y, connect):
+    def __init__(self, x, y, conect,plot='no'):
         self.x = x
         self.y = y
-        self.connect = connect
+        self.connect = conect
         self.point = []
         self.x1 = []
         self.y1 = []
 
-    def plot(self, plot='no'):
         if plot == 'yes':
             for xi, yi in zip(self.x, self.y):
                 self.point.append([xi, yi])
@@ -21,6 +22,7 @@ class plottruss():
                 self.y1.append(self.point[self.connect[i][0]][1])
                 self.y1.append(self.point[self.connect[i][1]][1])
             plt.plot(self.x1, self.y1)
+            plt.show()
 
 class Opt():
     """Otimização via PSO"""
@@ -44,7 +46,7 @@ class Opt():
         # 1 --- Análise estrutural
         # 2 --- Otimização
 
-        self.createtruss10()
+        createtruss10()
         self.trussfe()
         # Execute a opção desejada:
         #		2---OTIMIZAÇÃO

@@ -2,7 +2,6 @@ import numpy as np
 from scipy.sparse import csr_matrix
 from math import sqrt, atan, sin, cos, pi
 "se precisar de algum K1K2K3 TEM Q RESOLVER KEGLBRB!! maxmax tbm é lá"
-
 class createtruss10():
 
     """
@@ -155,7 +154,6 @@ class createtruss10():
         global comp1
         global comp2
         global comp3
-        #self.nglb = max(max(self.glb))????tirei
         #
         #  atencao isto e especifico p/ 3dv apenas!!!
         #  nelm1 =ultimo no. de elemnto coberto pela dv1
@@ -245,6 +243,7 @@ class createtruss10():
         self.ke[3][1] = -kl * s * s
         self.ke[3][2] = kl * s * c
         self.ke[3][3] = kl * s * s
-
+        return self.ke
 createtruss10(X = [0, 0, 50, 50, 100, 100],Y = [0, 50, 0, 50, 0, 50],
               conect = [[0, 2], [2, 4], [0, 3], [2, 1], [2, 3], [2, 5], [4, 3], [4, 5], [1, 3], [3, 5]])
+
