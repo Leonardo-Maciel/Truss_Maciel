@@ -1,6 +1,7 @@
 import numpy as np
 from scipy.sparse import csr_matrix
 from math import sqrt, atan, sin, cos, pi
+import sendat
 "se precisar de algum K1K2K3 TEM Q RESOLVER KEGLBRB!! maxmax tbm é lá"
 class createtruss10():
 
@@ -17,11 +18,13 @@ class createtruss10():
         # Forneça a conectividade de cada elemento
         self.conect = conect
 
+        #Fornece dados para a análise de sensibilidades
         self.sendat()
-        #   Calculando o comprimento e os angulos das barras
+
+        #Calculando o comprimento e os angulos das barras
         self.compang()
 
-        #   Forneça o modulo de elasticidade de cada barra
+        #Forneça o modulo de elasticidade de cada barra
 
         self.E = 2.07 * (10 ** 11)
         self.els = self.E * np.ones(len(self.conect))
@@ -30,7 +33,7 @@ class createtruss10():
 
         self.props = [self.ang, self.comp, self.els, self.ro]
 
-        #   forneça a area da seçao tansversal de cada elemento
+        #Forneça a area da seçao tansversal de cada elemento
 
         self.mu = [5, 5, 5]
         self.area = []
@@ -71,7 +74,7 @@ class createtruss10():
         # save trussrb.mat X Y conect props mu ID nglb glb fext nelem link K1 K2 K3
     
     def sendat(self):
-        "Fornece dados para a análise de sensibilidades"
+        """Fornece dados para a análise de sensibilidades"""
 
     #   > Entra com no. de variáveis de projeto --- ndvab
     #	> relacao entre as variáveis primárias e secundárias:
@@ -82,11 +85,12 @@ class createtruss10():
     #
     #
 
-        self.ndvab = 3
-        #        1   2   3   4   5   6   7   8   9   10
-        self.link = [[0, 0], [1, 0], [1, 0], [1, 0], [2, 0], [2, 0], [1, 0], [2, 0], [0, 0], [2, 0]] #mudei
-        self.lpdva = [0, 2, 1]#mudei
-        self.perturb = 10**-6
+        self.ndvab = 3  # nmudei
+        #               1       2       3      4        5      6        7       8      9      10
+        self.link = [[0, 1], [1, 1], [1, 1], [1, 1], [2, 1], [2, 1], [1, 1], [2, 1], [0, 1], [2, 1]]  # mudei
+        self.lpdva = [1, 3, 2]
+        self.perturb = 10 ** -6
+
     
     def compang(self):
 
@@ -107,21 +111,22 @@ class createtruss10():
 
         for i in range(self.nelm):
             # nessa parte q ele relaciona as coordenadas com os nós
-            A.append(abs(self.X[self.conect[i][1]] - self.X[self.conect[i][0]]))
+            A.append(self.X[self.conect[i][1]] - self.X[self.conect[i][0]])
             if A[i] == 0:
-                A[i] = 10 ** (-9)  # ???????
+                A[i] = 10**-9
 
-            B.append(abs(self.Y[self.conect[i][1]] - self.Y[self.conect[i][0]]))
-            if atan(B[i]/A[i])<0:
-                teta.append(atan(A[i] / B[i]) + pi)
-            else:
-                teta.append(atan(B[i] / A[i]))
+            B.append(self.Y[self.conect[i][1]] - self.Y[self.conect[i][0]])
+            teta.append(atan(B[i] / A[i]))
+            if teta[i]<0:
+                teta[i]=teta[i] + pi
+
+
             self.ang.append(teta[i])
         print(self.ang)
         print(self.comp)
     
     def constroi(self):
-        # sub-rotina para construir a matriz LD
+        """" sub-rotina para construir a matriz LD"""
 
         #---------------------------------------------------------
         # nnos = numero de nos
@@ -148,7 +153,7 @@ class createtruss10():
             for j in range(2):
                 self.LD[i][j] = self.ID[self.conect[i][0]][j]
                 self.LD[i][j+2] = self.ID[self.conect[i][1]][j]
-        return self.LD
+        return np.transpose(self.LD)
     def keglbrb(self):
         # Monta a matriz de rigidez global
         global comp1

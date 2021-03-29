@@ -4,8 +4,8 @@ def compang(x, y, conect):
     nelm = 13
     connect = conect
     """ Calculando o comprimento e os angulos das barras"""
-    self.comp = []  # comprimentro entre os nós
-    self.ang = []  # angulos entre as barras da treliça
+    comp = []  # comprimentro entre os nós
+    ang = []  # angulos entre as barras da treliça
     L = []
     teta = []
     A = []
@@ -15,7 +15,7 @@ def compang(x, y, conect):
         noj = connect[i][0]
         nok = connect[i][1]
         L.append(sqrt((x[noj] - x[nok]) ** 2 + (y[noj] - y[nok]) ** 2))
-        self.comp.append(L[i])
+        comp.append(L[i])
 
     for i in range(nelm):
         # nessa parte q ele relaciona as coordenadas com os nós
@@ -28,6 +28,8 @@ def compang(x, y, conect):
             teta.append(atan(A[i] / B[i]))
         else:
             teta.append(atan(B[i] / A[i]))
-        self.ang.append(teta[i])
+        ang.append(teta[i])
     print(ang)
     print(comp)
+    ang_comp=[ang,comp]
+    return ang_comp

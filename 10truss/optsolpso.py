@@ -1,4 +1,4 @@
-"""Realiza a Optimizacao da estrutura"""
+"""Realiza a Otimizacao da estrutura"""
 import numpy as np
 from scipy import sparse
 from createtruss10 import createtruss10
@@ -13,42 +13,6 @@ class optsolpso():
         ang = props[1][:]
         comp = props[2][:]
         els = props[3][:]
-
-        area = self.getval(comp, x, link)
-        #
-        # Faz a solução via o MEF para avaliação das funções.
-        #
-        self.fesol(area, ang, comp, els, fext, glb)
-        en = np.transpose(fext)*self.u
-        #
-        # guarda na variavel  ' 'par' alguns paramentros adicionais
-        #
-        #	par = [ndvab]
-        #
-        # Armazena todas as funções
-        #
-        if tpobj == 1:
-            fob = self.vol
-        elif tpobj == 2:
-            fob = en
-        elif tpobj == 3:
-            fob = max(abs(self.sig))
-        elif tpobj == 4:
-            fob = max(abs(self.u))
-
-        if tpres == 1:
-            fre = self.vol
-        elif tpres == 2:
-            fre = self.sig
-        elif tpres == 3:
-            fre = [self.sig, self.u]
-        elif tpres == 4:
-            fre = np.transpose(self.u)
-        else:
-            fre = en
-        f=[fob, fre]
-
-        return f
 
     def getval(self,comp,xvalu,link):
         #
@@ -123,7 +87,8 @@ class optsolpso():
         for i in range(self.nelm):
 
             ae = [-cos(ang[i]), -sin(ang[i]), cos(ang[i]), sin(ang[i])]
-            id = np.flatnonzero(glb[:][i])
+            id = np.flatnonzero((glb[:][i]))
+            id = id.astype(int)
             gb = glb[id][i]
             uo = u[gb]
             en = ae[id] * uo
@@ -150,3 +115,38 @@ class optsolpso():
             vol = vol + area[ielem] * comp[ielem]
 
         return vol
+    def sol(self):
+        area = self.getval(comp, x, link)
+        #
+        # Faz a solução via o MEF para avaliação das funções.
+        #
+        self.fesol(area, ang, comp, els, fext, glb)
+        en = np.transpose(fext)*self.u
+        #
+        # guarda na variavel  ' 'par' alguns paramentros adicionais
+        #
+        #	par = [ndvab]
+        #
+        # Armazena todas as funções
+        #
+        if tpobj == 1:
+            fob = self.vol
+        elif tpobj == 2:
+            fob = en
+        elif tpobj == 3:
+            fob = max(abs(self.sig))
+        elif tpobj == 4:
+            fob = max(abs(self.u))
+
+        if tpres == 1:
+            fre = self.vol
+        elif tpres == 2:
+            fre = self.sig
+        elif tpres == 3:
+            fre = [self.sig, self.u]
+        elif tpres == 4:
+            fre = np.transpose(self.u)
+        else:
+            fre = en
+        fobfre=[fob,fre]
+        return fobfre
