@@ -2,6 +2,7 @@ import numpy as np
 from optdat10 import optdat10
 from matplotlib import pyplot as plt
 from createtruss10 import createtruss10
+from optsolpso import optsolpso
 """preciso chamar as funcoes para fazer funcionarem"""
 class plottruss():
 
@@ -47,7 +48,7 @@ class Opt():
         # 1 --- Análise estrutural
         # 2 --- Otimização
 
-        createtruss10()
+        createtruss = createtruss10()
 
         #self.trussfe() salvava variáveis do createtruss em um arquivo .mat
         # Execute a opção desejada:
@@ -55,7 +56,7 @@ class Opt():
         #penal = 10 ^ 8; JA TEM LA EM CIMA
         self.ndvab = max(max(link))
 
-        dadosoptdat10 = optdat10(area, lpdva, ndvab, nglb)#
+        dadosoptdat10 = optdat10(createtruss.area, createtruss.lpdva, createtruss.ndvab, createtruss.nglb)#
         tpobj = dadosoptdat10[0]
         tpres = dadosoptdat10[1]
         vlb =dadosoptdat10[2]
@@ -64,7 +65,8 @@ class Opt():
         clb =dadosoptdat10[5]
         cub =dadosoptdat10[6]
 
-        fobfre = optsolpso(props, fext, glb, link, tpobj, tpres, area)
+        optsolpso = optsolpso()
+        fobfre=optsolpso.optsolpso(createtruss.props, createtruss.fext, createtruss.glb, createtruss.link, tpobj, tpres, createtruss.area)
         fob = fobfre[0]
         fre = fobfre[1]
         #*********

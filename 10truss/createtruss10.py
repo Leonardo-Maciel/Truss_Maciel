@@ -1,7 +1,7 @@
 import numpy as np
 from scipy.sparse import csr_matrix
 from math import sqrt, atan, sin, cos, pi
-import sendat
+from optdat10 import optdat10
 "se precisar de algum K1K2K3 TEM Q RESOLVER KEGLBRB!! maxmax tbm é lá"
 class createtruss10():
 
@@ -64,6 +64,7 @@ class createtruss10():
         self.fext[5] = -1000
 
         self.nelem = len(self.conect)
+
         # la=find(link(:,1)==1)
         # lb=find(link(:,1)==2)
         # lc=find(link(:,1)==3)
@@ -122,8 +123,6 @@ class createtruss10():
 
 
             self.ang.append(teta[i])
-        print(self.ang)
-        print(self.comp)
     
     def constroi(self):
         """" sub-rotina para construir a matriz LD"""
