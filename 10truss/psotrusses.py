@@ -3,6 +3,13 @@ from optdat10 import optdat10
 from matplotlib import pyplot as plt
 from createtruss10 import createtruss10
 from optsolpso import optsolpso
+from inicia import inicia
+from funpso import funpso
+from selectZb import selectZb
+from tZbest import tZbest
+from memoria import memoria
+from ajuste import ajuste
+from tconv import tconv
 """preciso chamar as funcoes para fazer funcionarem"""
 class plottruss():
 
@@ -29,7 +36,7 @@ class plottruss():
 class Opt():
     """Otimização via PSO"""
 
-    def __init__(self):
+    def __init__(self,x,y,conect):
         # Entradas:
 
         # global lpdva
@@ -48,13 +55,13 @@ class Opt():
         # 1 --- Análise estrutural
         # 2 --- Otimização
 
-        createtruss = createtruss10()
+        createtruss = createtruss10(x,y,conect)
 
         #self.trussfe() salvava variáveis do createtruss em um arquivo .mat
         # Execute a opção desejada:
         #		2---OTIMIZAÇÃO
-        #penal = 10 ^ 8; JA TEM LA EM CIMA
-        self.ndvab = max(max(link))
+        penal = 10**8
+        self.ndvab = max(max(createtruss.link))
 
         dadosoptdat10 = optdat10(createtruss.area, createtruss.lpdva, createtruss.ndvab, createtruss.nglb)#
         tpobj = dadosoptdat10[0]
@@ -65,17 +72,17 @@ class Opt():
         clb =dadosoptdat10[5]
         cub =dadosoptdat10[6]
 
-        optsolpso = optsolpso()
-        fobfre=optsolpso.optsolpso(createtruss.props, createtruss.fext, createtruss.glb, createtruss.link, tpobj, tpres, createtruss.area)
+        optsolPSO=optsolpso()
+        fobfre=optsolPSO.fobfre(props=createtruss.props, fext=createtruss.fext, glb=createtruss.glb, link=createtruss.link, tpobj=tpobj, tpres=tpres, x=createtruss.area)
         fob = fobfre[0]
         fre = fobfre[1]
         #*********
-        para = [ndvab, tpobj, tpres, f0]
+        para = [createtruss.ndvab, tpobj, tpres, fob]
         con = [clb, cub]
         #*********
-        np = 20  # número de partículas20
+        nparticulas = 20  # antigo np 20
         dim = para[0]  # número de dimensões das partículas
-        maxiter = 500  # número de iterações máximas10000
+        maxiter = 500  #10000 número de iterações máximas10000
 
 
         vmin = -0.5 * (vub - vlb)  # limites para as mudanças locais
@@ -83,9 +90,9 @@ class Opt():
 
         wp = 3.0  # parâmetros de c1
         ws = 4 - wp  # confiança c2
-        Zb = inf(np, 1)  # forma inicial
+        Zb = np.ones(nparticulas)*np.inf  # forma inicial
 
-        pnextvel = inicia(dim, np, vlb, vub)  # inicialização das partículas
+        pnextvel = inicia(dim, nparticulas, vlb, vub)  # inicialização das partículas
         pnext = pnextvel[0]
         vel = pnextvel[1]
 
@@ -93,44 +100,45 @@ class Opt():
         cont = 0
         cond = 0
         wn = 1.4
-        xb = np.zeros((np, dim))
-        mZb = np.zeros((0.25 * maxiter, dim + 1))
-        mp = np.zeros((0.1 * maxiter, dim + 1, np))
+
+        xb = np.zeros((nparticulas, dim))
+        mZb = np.zeros((int(0.25 * maxiter), dim + 1))
+        mp = np.zeros((int(0.1 * maxiter), dim + 1, nparticulas))
         Zbsf = 0
-        t = np.zeros((np, 1))
-        fit = np.zeros((1, np))
+        t = np.zeros(nparticulas)
+        fit = np.zeros(nparticulas)
 
         while cont < maxiter:  # início do loop
-            cont = cont + 1
+
             p = pnext  # atualização das partículas
-            for i in range(np):
-                ft = funpso(p[i][:], fext, glb, link)
+            for i in range(nparticulas):
+                ft = funpso(para,createtruss.props,con,penal,p[i][:], createtruss.fext, createtruss.glb, createtruss.link)
                 f=ft[0]
                 t0=ft[1]
                 fit[i] = f
                 t[i] = t0
 
-            Zbxbt = selectZb(Zb, fit, xb, t, p, np)   # teste para ver a melhor forma
+            Zbxbt = selectZb(Zb, fit, xb, t, p, nparticulas)   # teste para ver a melhor forma
             Zb = Zbxbt[0]
             xb = Zbxbt[1]
             t = Zbxbt[2]
 
-            mZbposZb = tZbest(Zb, xb, mZb, cont, maxiter)  # seleção da melhor aptidão no enxame
+            mZbposZb = tZbest(Zb, xb, mZb, cont, maxiter)  # seleção da melhor aptidão no enxame O RESULTADO TA ESTRANHO
             mZb = mZbposZb[0]
             posZb = mZbposZb[1]
 
-            mpposp = memoria(fit, p, cont, mp, maxiter, np)  # histórico das iterações
+            mpposp = memoria(fit, p, cont, mp, maxiter, nparticulas)  # histórico das iterações
             mp = mpposp[0]
             posp = mpposp[1]
 
             if cont%3 == 0:     ###############
-                w = ajuste(mp(posp, end,:), np, wn)  # atualização da inércia
+                w = ajuste(mp[posp, -1,:], nparticulas, wn)  # atualização da inércia
                 wn = w
 
-            if cont > 0.1 * maxiter & & (rem(cont, 50) == 0):
+            if cont > 0.1*maxiter and cont%50== 0:
                 [cvg, cond] = tconv(Zb, mp, posp, mZb, posZb, cont, cond, maxiter, np)  # teste de
                 # convergência
-
+            """
             if cvg ~= 0:
                 break
 
@@ -144,7 +152,10 @@ class Opt():
 
             #wp = 0.5 + (3 / maxiter) * cont
             #             ws = 4 - wp;
-        tempo = toc
+        """
+            cont = cont + 1
+
+        """tempo = toc
 
         xstr = mZb(posZb, 2:end)  # posição do ótimo
         ang = props(1,:)
@@ -154,4 +165,6 @@ class Opt():
         en = fext'*u;
 
         fstr = mZb(posZb, 1)# valor ótimo
-        print(fstr)
+        print(fstr)"""
+Opt=Opt(x = [0, 0, 50, 50, 100, 100],y = [0, 50, 0, 50, 0, 50],
+              conect = [[0, 2], [2, 4], [0, 3], [2, 1], [2, 3], [2, 5], [4, 3], [4, 5], [1, 3], [3, 5]])

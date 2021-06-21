@@ -1,4 +1,4 @@
-def selectZb (Zb,fit,xb,t,p,np):
+def selectZb (Zb,fit,xb,t,p,nparticulas):
     #  Seleciona a melhor forma encontrada pela partícula até o memento
     #
     #    [Zb,xb,t] = selectZb (Zb,fit,xb,t,p,np)
@@ -11,7 +11,7 @@ def selectZb (Zb,fit,xb,t,p,np):
     #    np: número de partículas
     #    obj: psoição do objetivo analizado (otimização multiobjetivo)
 
-    for i in range(np):
+    for i in range(nparticulas):
         if fit[i] < Zb[i]:
             Zb[i] = fit[i]
             xb[i][:] = p[i][:]

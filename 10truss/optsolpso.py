@@ -14,7 +14,7 @@ class optsolpso():
         #
         # Faz a solução via o MEF para avaliação das funções.
         #
-    def optsolpso(self,props, fext, glb, link, tpobj, tpres, x):
+    def fobfre(self,props, fext, glb, link, tpobj, tpres, x):
         area = self.getval(props[1][:], x, link)
         self.fesol(area, props[0][:], props[1][:], props[2][:], fext, glb)
         en = np.transpose(fext)*self.u
@@ -100,7 +100,7 @@ class optsolpso():
         # Monta a matriz de rigidez global
 
         self.nelm = len(comp)
-        nglb = max(max(glb))
+        nglb = int(glb.max())
         glb=np.array(glb)
         kgb = np.zeros(shape=(nglb, nglb))#mudei de sparse.csr_matrix
 
@@ -147,7 +147,7 @@ class optsolpso():
         nelem=len(comp)
         vol = 0.0
         for ielem in range(nelem):
-            vol = vol + area[ielem] * comp[ielem]
+            vol = vol + (area[ielem] * comp[ielem])
 
         return vol
 

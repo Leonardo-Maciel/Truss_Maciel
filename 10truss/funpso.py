@@ -1,11 +1,8 @@
 """Fornece para o otimizador as funcões objetivo e restrição"""
 from optsolpso import optsolpso
 import numpy as np
-def funpso(x,fext,glb,link):
-    global  para
-    global  props
-    global  con
-    global  penal
+def funpso(para,props,con,penal,x,fext,glb,link):
+
     #
     #	Pega  nas variaveis  "para"  , "props"  e "con" alguns
     #  paramentros adicionais
@@ -19,8 +16,8 @@ def funpso(x,fext,glb,link):
     # Compara os vetores das variáveis de projeto
     #
     #--------------------------------------------------------------------------
-
-    fobfre =optsolpso(props,fext,glb,link,tpobj,tpres,x)
+    optsolPSO = optsolpso()
+    fobfre = optsolPSO.fobfre(props,fext,glb,link,tpobj,tpres,x)
     fob= fobfre[0]
     fre= fobfre[1]
     #--------------------------------------------------------------------------
@@ -34,7 +31,7 @@ def funpso(x,fext,glb,link):
     #     compute das restrições  normalisadas:
     #
     nsize = len(fre)
-    rnor = np.zeros(1,2*nsize)
+    rnor = np.zeros(2*nsize)
     for isize in range(nsize):
         #icon = isize
         rnor[isize] = (fre[isize] -  cub[isize])/cub[isize]
@@ -49,7 +46,7 @@ def funpso(x,fext,glb,link):
     #--------------------------------------------
     # Função fitnnes para PSO
     #--------------------------------------------
-    for ir in range(nsize):
+    for ir in range(2*nsize):
        if g[ir] > 1e-6:
            soma = soma + g[ir]**2
 

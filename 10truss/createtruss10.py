@@ -55,7 +55,7 @@ class createtruss10():
 
         #   Construindo a matriz dos graus de liberdade
 
-        self.glb = self.constroi()
+        self.glb = self.constroi().astype(int)
 
         #   Entrada de Dados relacionado com as Cargas externas
 
@@ -73,7 +73,7 @@ class createtruss10():
         #self.K = self.keglbrb() ISSO TA DANDO MT ERRO
         # save trussfe.mat X Y conect props area ID nglb glb fext nelem link lpdva
         # save trussrb.mat X Y conect props mu ID nglb glb fext nelem link K1 K2 K3
-    
+
     def sendat(self):
         """Fornece dados para a análise de sensibilidades"""
 
@@ -92,7 +92,7 @@ class createtruss10():
         self.lpdva = [1, 3, 2]
         self.perturb = 10 ** -6
 
-    
+
     def compang(self):
 
         self.nelm = len(self.conect)
@@ -123,7 +123,7 @@ class createtruss10():
 
 
             self.ang.append(teta[i])
-    
+
     def constroi(self):
         """" sub-rotina para construir a matriz LD"""
 
@@ -222,7 +222,7 @@ class createtruss10():
         # c1 = comp1
         # c2 = comp2
         # c3 = comp3
-    
+
     def keltr(self,area,ls,els,teta):
         self.ke = np.zeros((4, 4))
         s = sin(teta)
@@ -248,6 +248,5 @@ class createtruss10():
         self.ke[3][2] = kl * s * c
         self.ke[3][3] = kl * s * s
         return self.ke
-createtruss10(X = [0, 0, 50, 50, 100, 100],Y = [0, 50, 0, 50, 0, 50],
-              conect = [[0, 2], [2, 4], [0, 3], [2, 1], [2, 3], [2, 5], [4, 3], [4, 5], [1, 3], [3, 5]])
-
+"""createtruss10(X = [0, 0, 50, 50, 100, 100],Y = [0, 50, 0, 50, 0, 50],
+              conect = [[0, 2], [2, 4], [0, 3], [2, 1], [2, 3], [2, 5], [4, 3], [4, 5], [1, 3], [3, 5]])"""

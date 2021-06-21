@@ -22,13 +22,13 @@ def tconv(Zb, mp, pp, Zbsf, ppb, t, cond, tmax, np):
     ver1 = 0
     ver2 = 0
     ver3 = 0
-    dc = np.zeros(100, 10)
+    dc = np.zeros(shape=(100, 10))
     # first termination condition
     gworst = max(Zb)
     gbest = min(Zb)
     den = gworst - gbest
-    if (ppb - 99) <= 0:
-        cgbest = [Zbsf[(0.25 * tmax) - (99 - ppb):][0], Zbsf[1:ppb+1][0]]
+    if (ppb - 99) <= 0:#parei aqui
+        cgbest = [Zbsf[int(0.25 * tmax) - int(99 - ppb)-1:,0], Zbsf[:ppb,0]]
         dif = Zbsf[(0.25 * tmax) - (99 - ppb)][0] - Zbsf[ppb][0]
     else:
         cgbest = Zbsf[ppb - 99:ppb+1][0]

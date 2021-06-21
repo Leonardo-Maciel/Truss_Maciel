@@ -1,5 +1,6 @@
 import random
-def ajuste(mem,np,wo):
+import statistics
+def ajuste(mem,nparticulas,wo):
 
     """Atualiza a inércia do enxame OBS: MUDEI OS CALCULOS"""
     #
@@ -10,11 +11,13 @@ def ajuste(mem,np,wo):
     #    np: número de partículas
     #    wo: inércia (a ser atualizada)
 
-    wn=random.random*wo
-    if wn > 1.4:
+    #wn=random.random*wo
+    memsel = mem[:round(0.2 * nparticulas)]
+    covar=statistics.mean(memsel)/statistics.stdev(memsel)
+    if covar < 1:
         wn = wo * 0.975
-
-    elif wn < 0.8:
-        wn = 0.8
-
+    else:
+        wn = wo
+    if wn < 0.35:
+        wn = 0.35
     return wn
