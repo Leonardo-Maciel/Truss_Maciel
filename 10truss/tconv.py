@@ -1,7 +1,7 @@
 import numpy as np
 import statistics
 
-def tconv(Zb, mp, pp, Zbsf, ppb, t, cond, tmax, np):
+def tconv(Zb, mp, pp, Zbsf, ppb, t, cond, tmax, nparticulas):
     """Avaliação dos critérios para encerramento do procedimento de otimizaçao"""
     #  via aglomeraçao de particulas (Particle Swarm Optimization - PSO)
     #
@@ -27,23 +27,26 @@ def tconv(Zb, mp, pp, Zbsf, ppb, t, cond, tmax, np):
     gworst = max(Zb)
     gbest = min(Zb)
     den = gworst - gbest
-    if (ppb - 99) <= 0:#parei aqui
-        cgbest = [Zbsf[int(0.25 * tmax) - int(99 - ppb)-1:,0], Zbsf[:ppb,0]]
-        dif = Zbsf[(0.25 * tmax) - (99 - ppb)][0] - Zbsf[ppb][0]
-    else:
-        cgbest = Zbsf[ppb - 99:ppb+1][0]
-        dif = Zbsf[ppb - 99][0] - Zbsf[ppb][0]
+    if (ppb - 99) <= 0:
+        cgbest = [Zbsf[int(0.25 * tmax) - int(99 - ppb)-1:,0]]
+        cgbest= np.append(Zbsf[:ppb,0],cgbest,0)
+        dif = Zbsf[int(0.25 * tmax) - int(99 - ppb)-1,0] - Zbsf[ppb,0]
+    else:#ver se precisa subtrair por -1 aqui tbm
+        cgbest = Zbsf[ppb - 99:ppb+1,0]
+        dif = Zbsf[ppb - 99,0] - Zbsf[ppb,0]
 
-    for i in range(np):
+    for i in range(nparticulas):
         if (pp - 99) <= 0:
-            cg = [mp[(0.1 * tmax) - (99 - pp):][0][i], mp[0:pp+1][0][i]]
-        else:
-            cg = mp[pp - 99:pp+1][0][i]
+            cg = mp[int(0.1 * tmax) - int(99 - pp):,0,i]
+            cg=np.append(mp[0:pp+1,0,i],cg,0)
 
-        dc[:][i] = cg - cgbest
+        else:
+            cg = mp[pp - 99:pp+1,0,i]
+
+        dc[:,i] = cg - cgbest
     dcm=[]
     for i in range(len(dc)):
-        dcm.append(statistics.mean(dc[i][:]))
+        dcm.append(statistics.mean(dc[i,:]))
     if den == 0:
         den = 10 ** -15
 
@@ -72,9 +75,9 @@ def tconv(Zb, mp, pp, Zbsf, ppb, t, cond, tmax, np):
 
     if cond%10 == 0 and t > 0.25 * tmax:
         if (ppb - 0.25 * tmax) < 0:
-            relcb = Zbsf[ppb + 1][0] - Zbsf[ppb][0]
+            relcb = Zbsf[ppb + 1,0] - Zbsf[ppb,0]
         else:
-            relcb = Zbsf[0][0] - Zbsf[ppb][0]
+            relcb = Zbsf[0,0] - Zbsf[ppb,0]
 
         if relcb == 0:
             ver3 = 1

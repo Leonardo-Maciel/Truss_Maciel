@@ -27,7 +27,7 @@ def tZbest(Zb,xb,mem,cont,tmax):
                 Z[k][0]=np.max(Z_p)+1
         #tirei sortrows daqui
 
-    pmem = int((cont-1)%(0.25*tmax))
+    pmem = int((cont)%(0.25*tmax))
     #if pmem == 0:
     #   pmem = int(0.25*tmax)
 

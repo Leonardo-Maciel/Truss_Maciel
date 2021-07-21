@@ -13,8 +13,8 @@ def memoria(fit,p,cont,mem,tmax,nparticulas):
     #    np: número de partículas
 
     pmem = int(cont%(0.1*tmax))
-    #if pmem == 0:
-    #    pmem = int(0.1*tmax)
+    if pmem == 0 and cont>0:
+        pmem = int(0.1*tmax)-1
 
     for i in range(nparticulas):
         mem[pmem,0,i] = fit[i]

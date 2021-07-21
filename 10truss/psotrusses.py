@@ -103,7 +103,7 @@ class Opt():
 
         xb = np.zeros((nparticulas, dim))
         mZb = np.zeros((int(0.25 * maxiter), dim + 1))
-        mp = np.zeros((int(0.1 * maxiter), dim + 1, nparticulas))
+        mp = np.zeros((nparticulas, dim + 1, int(0.1 * maxiter)))#np.zeros((int(0.1 * maxiter), dim + 1, nparticulas))
         Zbsf = 0
         t = np.zeros(nparticulas)
         fit = np.zeros(nparticulas)
@@ -136,13 +136,13 @@ class Opt():
                 wn = w
 
             if cont > 0.1*maxiter and cont%50== 0:
-                [cvg, cond] = tconv(Zb, mp, posp, mZb, posZb, cont, cond, maxiter, np)  # teste de
+                [cvg, cond] = tconv(Zb, mp, posp, mZb, posZb, cont, cond, maxiter, nparticulas)  # teste de
                 # convergência
-            """
-            if cvg ~= 0:
+            
+            """if cvg ~= 0:
                 break
 
-            for i in np:
+            for i in nparticulas:
                 del = atualiza(xb(i,:), mZb(posZb, (2:end)), wn, wp, ws, p(i,:), vel(i,:), t(i))  #
                 velnext = constrict(vmax, vmin,del);  # atualização da
                 vel(i,:) = velnext  # velocidade
