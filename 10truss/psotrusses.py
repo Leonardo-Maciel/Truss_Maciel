@@ -103,7 +103,7 @@ class Opt():
 
         xb = np.zeros((nparticulas, dim))
         mZb = np.zeros((int(0.25 * maxiter), dim + 1))
-        mp = np.zeros((nparticulas, dim + 1, int(0.1 * maxiter)))#np.zeros((int(0.1 * maxiter), dim + 1, nparticulas))
+        mp = np.zeros((int(0.1 * maxiter), dim + 1, nparticulas))#np.zeros((int(0.1 * maxiter), dim + 1, nparticulas))
         Zbsf = 0
         t = np.zeros(nparticulas)
         fit = np.zeros(nparticulas)
